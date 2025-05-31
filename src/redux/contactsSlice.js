@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchContacts } from "./contactsOps";
+import { deleteContact } from "./contactsOps";
+import { addContact } from "./contactsOps";
 
 const slice = createSlice({
   name: "contacts",
@@ -8,14 +10,6 @@ const slice = createSlice({
     loading: false,
     error: null,
   },
-  // reducers: {
-  //   addContact: (state, action) => {
-  //     state.items.push(action.payload);
-  //   },
-  //   deleteContact: (state, action) => {
-  //     state.items = state.items.filter((item) => item.id !== action.payload);
-  //   },
-  // },
   extraReducers: (builder) =>
     builder
       .addCase(fetchContacts.pending, (state) => {
@@ -27,9 +21,29 @@ const slice = createSlice({
       })
       .addCase(fetchContacts.rejected, (state) => {
         state.error = true;
+      })
+      .addCase(deleteContact.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteContact.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = state.items.filter(
+          (contact) => contact.id !== action.payload
+        );
+      })
+      .addCase(deleteContact.rejected, (state) => {
+        state.error = true;
+      })
+      .addCase(addContact.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addContact.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items.push(action.payload);
+      })
+      .addCase(addContact.rejected, (state) => {
+        state.error = true;
       }),
 });
-
-export const { addContact, deleteContact } = slice.actions;
 
 export default slice.reducer;
